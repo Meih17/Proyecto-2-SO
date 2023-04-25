@@ -34,16 +34,5 @@ class Computer:
         self.disco_duro[direccion] = valor
 
 
-    ############################ CORRER PROGRAMA ###########################
-
-    # Ejecuta un programa en la computadora
-    def run_programa(self, programa):
-        recorredor_programa = 0  # Contador de programa
-        while recorredor_programa < len(programa):
-            codigo_programa = programa[recorredor_programa]
-            if codigo_programa == 0:  # NOP
-                recorredor_programa += 1
-            elif codigo_programa == 1:  # LOAD
-                direccion = programa[recorredor_programa+1]
-                valor = self.leer_memoria(direccion)
-                self.escribir_memoria(0, valor) 
+    ############################ M M U ####################################
+    

@@ -18,6 +18,7 @@ Los algoritmos usados para comprobar el uso de la paginación fueron los siguien
 
 ## Cómo ejecutar el programa :video_game:
 
+- Instalar sudo apt-get install python3-tk
 
 
 
