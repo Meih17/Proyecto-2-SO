@@ -103,7 +103,7 @@ algoritmo_dropdown.grid(row=1, column=1, padx=(0,20))
 procesos_label = tk.Label(ventana, text="Número de procesos")
 procesos_label.grid(row=3, column=0, pady=20, padx=20)
 procesos_input = tk.Entry(ventana, justify="center", width=10)
-procesos_input.insert(0,10)
+procesos_input.insert(0,3)
 procesos_input.grid(row=3, column=1, padx=(0,20))
 
 
