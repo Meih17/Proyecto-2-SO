@@ -21,13 +21,11 @@ from computadora.Queue import Queue
 # Algoritmos de paginación
 from algoritmos.Random import Random
 from algoritmos.SecondChance import SecondChance
+from algoritmos.FIFO import FIFO
 
 # Ayudantes de memoria
 from computadora.MmuAlg import MmuAlg
-from computadora.MmuOpt import MmuOpt
-
-# Ayudante para abrir CSV
-import csv
+from computadora.MmuOpt import MmuOpt   # Este archivo ya aplica dentro de sí el algoritmo optimo
 
 
 # Tablero de control
@@ -171,39 +169,6 @@ def updateAlgSlider(val):
 
 
 
-def secondChance():
-    global mmuAlg
-    mmuAlg = MmuAlg(SecondChance())
-    global semilla
-    semilla = int(input_semilla.get())
-    ventana.destroy()
-
-
-
-def paginacion_random():
-    global mmuAlg
-    mmuAlg = MmuAlg(Random())
-    global semilla
-    semilla = int(input_semilla.get())
-    ventana.destroy()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# # FUNCIONES DE APOYO
-# # ================================================================
-
-
 def abrir_archivo_csv(fileName):
     allProcesses = []
     file = open(fileName, "r")
@@ -261,6 +226,31 @@ def generar_verificar_campos():
         msj_error.set("Error, algún campo vacío")
 
 
+def secondChance():
+    global mmuAlg
+    mmuAlg = MmuAlg(SecondChance())
+    global semilla
+    semilla = int(input_semilla.get())
+    ventana.destroy()
+
+
+
+def paginacion_random():
+    global mmuAlg
+    mmuAlg = MmuAlg(Random())
+    global semilla
+    semilla = int(input_semilla.get())
+    ventana.destroy()
+
+
+def paginacion_FIFO():
+    global mmuAlg
+    mmuAlg = MmuAlg(FIFO())
+    global semilla
+    semilla = int(input_semilla.get())
+    ventana.destroy()
+
+
 def correr_algoritmo():
     global algoritmo_seleccionado
     algoritmo_seleccionado = algoritmo_variable.get()
@@ -270,9 +260,10 @@ def correr_algoritmo():
 
     elif algoritmo_variable.get() == "Random":
         paginacion_random()
-
     elif algoritmo_variable.get() == "Second Chance":
         secondChance()
+    elif algoritmo_variable.get() == "FIFO":
+        paginacion_FIFO()
 
 
 

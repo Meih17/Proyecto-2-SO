@@ -105,9 +105,7 @@ class SecondChance:
         tempTime = self.getThrashingTime()
         tempTime += time
         self.setThrashingTime(tempTime)
-    
-    def delPag(self, page):
-        None
+
 
     def allocate(self, newPage, pid):
         if self.getRam().isFull():
