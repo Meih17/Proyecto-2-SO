@@ -22,6 +22,7 @@ from computadora.Queue import Queue
 from algoritmos.Random import Random
 from algoritmos.SecondChance import SecondChance
 from algoritmos.FIFO import FIFO
+from algoritmos.MRU import MRU
 
 # Ayudantes de memoria
 from computadora.MmuAlg import MmuAlg
@@ -226,13 +227,12 @@ def generar_verificar_campos():
         msj_error.set("Error, algún campo vacío")
 
 
-def secondChance():
+def paginacion_secondChance():
     global mmuAlg
     mmuAlg = MmuAlg(SecondChance())
     global semilla
     semilla = int(input_semilla.get())
     ventana.destroy()
-
 
 
 def paginacion_random():
@@ -250,6 +250,13 @@ def paginacion_FIFO():
     semilla = int(input_semilla.get())
     ventana.destroy()
 
+def paginacion_MRU():
+    global mmuAlg
+    mmuAlg = MmuAlg(MRU())
+    global semilla
+    semilla = int(input_semilla.get())
+    ventana.destroy()
+
 
 def correr_algoritmo():
     global algoritmo_seleccionado
@@ -261,9 +268,13 @@ def correr_algoritmo():
     elif algoritmo_variable.get() == "Random":
         paginacion_random()
     elif algoritmo_variable.get() == "Second Chance":
-        secondChance()
+        paginacion_secondChance()
     elif algoritmo_variable.get() == "FIFO":
         paginacion_FIFO()
+    elif algoritmo_variable.get() == "MRU":
+        paginacion_MRU()
+    else:
+        msj_error.set("Error, algo pasó")
 
 
 
