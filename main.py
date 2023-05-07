@@ -49,6 +49,13 @@ global llaveOptimo
 global paginaOptimo
 global mmuAlg
 global mmuOpt
+
+
+global archivo_csv
+global algoritmo
+global num_procesos
+global num_operaciones
+
 #=============================================================================
 
 
@@ -63,19 +70,6 @@ colores = [color for _ in range(100) for color in coloress]
 
 
 # FUNCIONES ===================================================================
-
-# Leer el archivo CSV
-def abrir_archivoCSV(nombre_archivo):
-    todosLosProcesos = []
-    file = open(nombre_archivo, "r")
-    for fila in file:
-        fila_proceso = []
-        for e in fila.split(','):
-            fila_proceso.append(e.lstrip().rstrip())
-        todosLosProcesos.append(fila_proceso)
-    file.close()
-    return todosLosProcesos[1:]
-
 
 def crearProcesos(todosLosProcesos):
     tempcallMemoria = []
@@ -180,19 +174,15 @@ def updateAlgSlider(val):
 def secondChance():
     global mmuAlg
     mmuAlg = MmuAlg(SecondChance())
-    global nombre_archivo
-    nombre_archivo = "pruebas.txt"
     global semilla
     semilla = int(input_semilla.get())
     ventana.destroy()
 
 
 
-def randomIni():
+def paginacion_random():
     global mmuAlg
     mmuAlg = MmuAlg(Random())
-    global nombre_archivo
-    nombre_archivo = "pruebas.txt"
     global semilla
     semilla = int(input_semilla.get())
     ventana.destroy()
@@ -207,23 +197,23 @@ def randomIni():
 
 
 
-# Variables que vamos a necesitar tirar en la otra ventana 
-archivo_csv = None
-semilla = None
-algoritmo = None
-num_procesos = None
-num_operaciones = None
+
 
 
 # # FUNCIONES DE APOYO
 # # ================================================================
 
-# Funcion para leer los archivos 
-def cargar_datos(nombre_archivo):
-    with open(nombre_archivo) as archivo_csv:
-        return csv.reader(archivo_csv)
-        # for fila in lector_csv:
-        #     print(fila)
+
+def abrir_archivo_csv(fileName):
+    allProcesses = []
+    file = open(fileName, "r")
+    for line in file:
+        tempList = []
+        for e in line.split(','):
+            tempList.append(e.lstrip().rstrip())
+        allProcesses.append(tempList)
+    file.close()
+    return allProcesses[1:]
 
 
 # Funcion para abrir el CSV
@@ -231,22 +221,24 @@ def abrir_archivo():
     archivo = filedialog.askopenfilename(filetypes=[("CSV", "*.csv")])
     if archivo:
         if archivo.endswith(".csv"):
-            archivo_csv = cargar_datos(archivo)
+            global archivo_csv
+            archivo_csv = abrir_archivo_csv(archivo)
             if input_semilla.get() != "":
                 csv_button.config(bg="green", fg="white")
+                csv_go_button.config(bg="green", fg="white")
                 msj_error.set("")
 
-                # ENVIAR A LA OTRA VENTANA
-                #archivo_csv
-                algoritmo = algoritmo_variable.get()
-                semilla = input_semilla.get()
-                print(algoritmo+" - "+semilla+" - "+str(archivo_csv))
+                # algoritmo = algoritmo_variable.get()
+                # semilla = input_semilla.get()
+                # print(algoritmo+" - "+semilla+" - "+str(archivo_csv))
 
             else:
                 csv_button.config(bg="red", fg="white")
+                csv_go_button.config(bg="red", fg="white")
                 msj_error.set("Le faltó la semilla")
         else:
             csv_button.config(bg="red", fg="white")
+            csv_go_button.config(bg="red", fg="white")
             msj_error.set("Error, verifique el archivo")
 
 
@@ -268,18 +260,17 @@ def generar_verificar_campos():
         msj_error.set("Error, algún campo vacío")
 
 
+def correr_algoritmo():
+    print(archivo_csv)
+    if archivo_csv == []:
+        csv_go_button.config(bg="red", fg="white")
+        msj_error.set("Error, archivo no cargado")
 
+    elif algoritmo_variable.get() == "Random":
+        paginacion_random()
 
-
-
-
-
-
-
-
-
-
-
+    elif algoritmo_variable.get() == "Second Chance":
+        secondChance()
 
 
 
@@ -337,18 +328,21 @@ if __name__ == '__main__':
     operaciones_input.grid(row=4, column=1, padx=(0,20))
 
 
-    # Ir a la siguiente ventana con el CSV
+    # Cargar el archivo CSV
     csv_button = tk.Button(ventana, text="Cargar CSV!", command=abrir_archivo)
     csv_button.grid(row=5, column=0, columnspan=1, pady=30)
 
+    #
+    csv_go_button = tk.Button(ventana, text="Correr", command=correr_algoritmo, background='red')
+    csv_go_button.grid(row=6, column=0, columnspan=1, pady=30)
 
     # Ir a la siguiente ventana usando los datos
-    generar_button = tk.Button(ventana, text="Generar!", command=randomIni)
+    generar_button = tk.Button(ventana, text="Generar!", command=correr_algoritmo)
     generar_button.grid(row=5, column=1, columnspan=1, pady=30, padx=(0,30))
 
     # Mensaje de error 
     mensaje_error = tk.Label(ventana, textvariable=msj_error)
-    mensaje_error.grid(row=6, column=0, pady=10, padx=20)
+    mensaje_error.grid(row=7, column=0, pady=10, padx=20)
 
 
     tk.mainloop()
@@ -360,8 +354,7 @@ if __name__ == '__main__':
     
     # Abrir archivos de procesos y preparar todo para su proceso
     random.seed(semilla)
-    todosLosProcesos  = abrir_archivoCSV('pruebas.txt')
-    crearProcesos(todosLosProcesos)
+    crearProcesos(archivo_csv)
     tablaProcesosQuitados = copy.deepcopy(tablaProcesos)
     finished = False
     CopiaDeMemoria = Queue()
