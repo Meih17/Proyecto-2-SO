@@ -52,7 +52,7 @@ global mmuOpt
 
 
 global archivo_csv
-global algoritmo
+algoritmo_seleccionado = ""
 global num_procesos
 global num_operaciones
 
@@ -249,11 +249,12 @@ def generar_verificar_campos():
         msj_error.set("")
 
         # ENVIAR A  LA OTRA VENTANA
-        algoritmo = algoritmo_variable.get()
+        global algoritmo_seleccionado
+        algoritmo_seleccionado = algoritmo_variable.get()
         semilla = input_semilla.get()
         num_procesos = procesos_input.get()
         num_operaciones = operaciones_input.get()
-        print(algoritmo+" - "+semilla+" - "+num_procesos+" - "+num_operaciones)
+        # print(algoritmo_seleccionado+" - "+semilla+" - "+num_procesos+" - "+num_operaciones)
 
     else:
         generar_button.config(bg="red", fg="white")
@@ -261,7 +262,8 @@ def generar_verificar_campos():
 
 
 def correr_algoritmo():
-    print(archivo_csv)
+    global algoritmo_seleccionado
+    algoritmo_seleccionado = algoritmo_variable.get()
     if archivo_csv == []:
         csv_go_button.config(bg="red", fg="white")
         msj_error.set("Error, archivo no cargado")
@@ -271,8 +273,6 @@ def correr_algoritmo():
 
     elif algoritmo_variable.get() == "Second Chance":
         secondChance()
-
-
 
 
 
@@ -412,11 +412,11 @@ if __name__ == '__main__':
 
     # Titulos de las barras de RAM
     plt.gcf().text(0.48, 0.93, "RAM - OPT", fontsize=10)
-    plt.gcf().text(0.48, 0.85, "RAM - ALG", fontsize=10)
+    plt.gcf().text(0.48, 0.85, f"RAM - {algoritmo_seleccionado}", fontsize=10)
 
     # Titulos de las Tablas
     plt.gcf().text(0.23, 0.73, "MMU - OPT", fontsize=10)
-    plt.gcf().text(0.73, 0.73, "MMU - ALG", fontsize=10)
+    plt.gcf().text(0.73, 0.73, f"MMU - {algoritmo_seleccionado}", fontsize=10)
 
 
 
