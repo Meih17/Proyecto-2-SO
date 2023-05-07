@@ -38,4 +38,3 @@ Los algoritmos usados para comprobar el uso de la paginación fueron los siguien
 - Presionar el botón de `Generar!`
 - Se nos generará un archivo CSV en la carpeta de trabajo con el cual vamos a trabajar a continuación
 - Se abrirá la siguiente ventana donde se mostrará el proceso de paginación corriendo
-
