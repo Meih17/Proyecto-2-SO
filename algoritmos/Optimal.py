@@ -113,7 +113,6 @@ class Optimal:
                 if 0 in self.getRam().getMemory():
                     if(page in self.getDisk().getMemory()):
                         self.removeFromDisk(page)
-                        #time.sleep(5)
                     tim = self.getExecTime()
                     self.allocateInRam(page, pid)
                     lAddr = self.getRam().getMemory().index(page)
@@ -135,11 +134,9 @@ class Optimal:
                     self.removeFromRam(marked[0])
                     if(page in self.getDisk().getMemory()):
                         self.removeFromDisk(page)
-                        #time.sleep(5)
                     tim = self.getExecTime()
                     self.allocateInRam(page, pid)
                     lAddr = self.getRam().getMemory().index(page)
-                    # disk
                     self.allocateInDisk(marked[0], pid)
                     timeDisk = self.getExecTime() 
                     pos = self.getDisk().getMemory().index(marked[0])
