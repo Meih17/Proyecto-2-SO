@@ -17,6 +17,8 @@ from math import ceil
 import random
 import copy
 from computadora.Queue import Queue
+import os   # Lo use para prints, si no lo necesita lo puede quitar
+import csv
 
 # Algoritmos de paginación
 from algoritmos.Random import Random
@@ -135,6 +137,68 @@ def killproceso(ptr, mmuOpt, mmuAlg):
         tablaProcesosQuitados[key] = fila_proceso
 
 
+
+def create_file(num_lines=20):
+    my_ptr = 0
+    los_procesos = []
+    for procesos in range(1, num_lines):
+        for i in range(random.randint(2,10)):
+            my_ptr += 1
+            my_ptrStr = str(my_ptr)
+            while len(my_ptrStr) < 3:
+                my_ptrStr = "0" + my_ptrStr
+            size = str(random.randint(100, 16384))
+            line = [str(procesos) ,  str(my_ptrStr) , str(size)]
+            los_procesos.append(line)
+    # print(los_procesos[:num_lines])
+    return los_procesos[:num_lines]
+
+def generar_operaciones():
+    P = int(procesos_input.get())
+    full_instructions = []
+    for i in range(1,P+2):
+        instructions = []
+        num_news  = int(P*0.2)+1
+        news = [f'new({i},{random.randint(100,4096)})' for i in range(1,num_news)]
+        kills = list(f'kill({i})' for i in range(1,num_news))
+        uses = [f'use({random.randint(1,num_news-1)})' for i in range(int(P*0.5))]
+        deletes = [f'delete({random.randint(1,num_news-1)})' for i in range(int(P*0.1))]
+
+        # Fusionar las listas
+        instructions.extend(news)
+        uses.extend(deletes)
+        random.shuffle(uses)
+        instructions.extend(uses)
+        instructions.extend(kills)
+        full_instructions.append(instructions)
+    # print(full_instructions[0])
+    with open('pruebas.csv', mode='w') as file:
+        writer = csv.writer(file, delimiter='\t')
+        for row in full_instructions[0]:
+            # print(row)
+            writer.writerow([row])
+
+def crear_procesos_manuales():
+    generar_operaciones()
+    num_lines = int(procesos_input.get())
+    my_ptr = 0
+    los_procesos = []
+    for procesos in range(1, num_lines):
+        for i in range(random.randint(2,10)):
+            my_ptr += 1
+            my_ptrStr = str(my_ptr)
+            while len(my_ptrStr) < 3:
+                my_ptrStr = "0" + my_ptrStr
+            size = str(random.randint(100, 16384))
+            line = [str(procesos) ,  str(my_ptrStr) , str(size)]
+            # file.write(line)
+            los_procesos.append(line)
+    # print(los_procesos[:num_lines])
+    # file.close()
+    return los_procesos[:num_lines]
+
+
+
 def finish(mmuOpt, mmuAlg):
     tablaProcesos.clear()
     tablaProcesosQuitados.clear()
@@ -185,10 +249,14 @@ def abrir_archivo_csv(fileName):
 # Funcion para abrir el CSV
 def abrir_archivo():
     archivo = filedialog.askopenfilename(filetypes=[("CSV", "*.csv")])
+    os.system('clear')
     if archivo:
         if archivo.endswith(".csv"):
+            mis_csvs_enorden = abrir_archivo_csv(archivo)
             global archivo_csv
-            archivo_csv = abrir_archivo_csv(archivo)
+            archivo_csv = create_file(len(mis_csvs_enorden))
+            # print(archivo_csv)
+            
             if input_semilla.get() != "":
                 csv_button.config(bg="green", fg="white")
                 csv_go_button.config(bg="green", fg="white")
@@ -210,7 +278,7 @@ def abrir_archivo():
 
 # Funcion para ver si todos los campos estan llenos en caso de
 def generar_verificar_campos():
-    if input_semilla.get() != "" and procesos_input.get() != "" and operaciones_input.get() != "":
+    if input_semilla.get() != "" and procesos_input.get() != "":
         generar_button.config(bg="green", fg="white")
         msj_error.set("")
 
@@ -219,7 +287,7 @@ def generar_verificar_campos():
         algoritmo_seleccionado = algoritmo_variable.get()
         semilla = input_semilla.get()
         num_procesos = procesos_input.get()
-        num_operaciones = operaciones_input.get()
+        # num_operaciones = operaciones_input.get()
         # print(algoritmo_seleccionado+" - "+semilla+" - "+num_procesos+" - "+num_operaciones)
 
     else:
@@ -256,6 +324,7 @@ def paginacion_MRU():
     global semilla
     semilla = int(input_semilla.get())
     ventana.destroy()
+
 
 
 def correr_algoritmo():
@@ -318,16 +387,16 @@ if __name__ == '__main__':
     procesos_label = tk.Label(ventana, text="Número de procesos")
     procesos_label.grid(row=3, column=0, pady=20, padx=20)
     procesos_input = tk.Entry(ventana, justify="center", width=10)
-    procesos_input.insert(0,3)
+    procesos_input.insert(0,15)
     procesos_input.grid(row=3, column=1, padx=(0,20))
 
 
-    # Cantidad de operaciones
-    operaciones_label = tk.Label(ventana, text="Cantidad de operaciones")
-    operaciones_label.grid(row=4, column=0, pady=20, padx=20)
-    operaciones_input = tk.Entry(ventana, justify="center", width=10)
-    operaciones_input.insert(0,16)
-    operaciones_input.grid(row=4, column=1, padx=(0,20))
+    # # Cantidad de operaciones
+    # operaciones_label = tk.Label(ventana, text="Cantidad de operaciones")
+    # operaciones_label.grid(row=4, column=0, pady=20, padx=20)
+    # operaciones_input = tk.Entry(ventana, justify="center", width=10)
+    # operaciones_input.insert(0,16)
+    # operaciones_input.grid(row=4, column=1, padx=(0,20))
 
 
     # Cargar el archivo CSV
@@ -339,7 +408,7 @@ if __name__ == '__main__':
     csv_go_button.grid(row=6, column=0, columnspan=1, pady=30)
 
     # Ir a la siguiente ventana usando los datos
-    generar_button = tk.Button(ventana, text="Generar!", command=correr_algoritmo)
+    generar_button = tk.Button(ventana, text="Generar!", command=crear_procesos_manuales)
     generar_button.grid(row=5, column=1, columnspan=1, pady=30, padx=(0,30))
 
     # Mensaje de error 
@@ -352,8 +421,6 @@ if __name__ == '__main__':
     # ==========================================================================================================
 
 
-
-    
     # Abrir archivos de procesos y preparar todo para su proceso
     random.seed(semilla)
     crearProcesos(archivo_csv)
